@@ -306,76 +306,45 @@ export function SideBar(props: { className?: string }) {
         )}
       </SideBarHeader>
       <SideBarBody
-        onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            navigate(Path.Home);
-          }
-        }}
-      >
-        <ChatList narrow={shouldNarrow} />
-      </SideBarBody>
-      {/* 公司 Logo */}
+  onClick={(e) => {
+    if (e.target === e.currentTarget) {
+      navigate(Path.Home);
+    }
+  }}
+>
+  <ChatList narrow={shouldNarrow} />
+</SideBarBody>
+
+{/* 公司 Logo 放在按钮区上方 */}
 <div style={{ textAlign: "center", marginBottom: "20px" }}>
   <img
-    src="/company-logo.jpg"   // 放 public/ 下的 jpg 文件
+    src="/company-logo.jpg"
     alt="Company Logo"
     style={{ maxWidth: "120px", opacity: 0.9 }}
   />
 </div>
 
 <SideBarTail
-  primaryAction={ ... }
-  secondaryAction={ ... }
+  primaryAction={
+    <>
+      {/* 你的 primary actions，这里是删除、设置、GitHub 链接等 */}
+    </>
+  }
+  secondaryAction={
+    <IconButton
+      icon={<AddIcon />}
+      text={shouldNarrow ? undefined : Locale.Home.NewChat}
+      onClick={() => {
+        if (config.dontShowMaskSplashScreen) {
+          chatStore.newSession();
+          navigate(Path.Chat);
+        } else {
+          navigate(Path.NewChat);
+        }
+      }}
+      shadow
+    />
+  }
 />
-      <SideBarTail
-        primaryAction={
-          <>
-            <div className={clsx(styles["sidebar-action"], styles.mobile)}>
-              <IconButton
-                icon={<DeleteIcon />}
-                onClick={async () => {
-                  if (await showConfirm(Locale.Home.DeleteChat)) {
-                    chatStore.deleteSession(chatStore.currentSessionIndex);
-                  }
-                }}
-              />
-            </div>
-            <div className={styles["sidebar-action"]}>
-              <Link to={Path.Settings}>
-                <IconButton
-                  aria={Locale.Settings.Title}
-                  icon={<SettingsIcon />}
-                  shadow
-                />
-              </Link>
-            </div>
-            <div className={styles["sidebar-action"]}>
-              <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
-                <IconButton
-                  aria={Locale.Export.MessageFromChatGPT}
-                  icon={<GithubIcon />}
-                  shadow
-                />
-              </a>
-            </div>
-          </>
-        }
-        secondaryAction={
-          <IconButton
-            icon={<AddIcon />}
-            text={shouldNarrow ? undefined : Locale.Home.NewChat}
-            onClick={() => {
-              if (config.dontShowMaskSplashScreen) {
-                chatStore.newSession();
-                navigate(Path.Chat);
-              } else {
-                navigate(Path.NewChat);
-              }
-            }}
-            shadow
-          />
-        }
-      />
-    </SideBarContainer>
-  );
-}
+
+</SideBarContainer>
