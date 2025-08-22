@@ -14,6 +14,7 @@ import DragIcon from "../icons/drag.svg";
 import DiscoveryIcon from "../icons/discovery.svg";
 
 import Locale from "../locales";
+
 import { useAppConfig, useChatStore } from "../store";
 
 import {
@@ -80,7 +81,6 @@ export function useDragSideBar() {
   };
 
   const onDragStart = (e: MouseEvent) => {
-    // Remembers the initial width each time the mouse is pressed
     startX.current = e.clientX;
     startDragWidth.current = config.sidebarWidth;
     const dragStartTime = Date.now();
@@ -105,7 +105,6 @@ export function useDragSideBar() {
       window.removeEventListener("pointermove", handleDragMove);
       window.removeEventListener("pointerup", handleDragEnd);
 
-      // if user click the drag icon, should toggle the sidebar
       const shouldFireClick = Date.now() - dragStartTime < 300;
       if (shouldFireClick) {
         toggleSideBar();
@@ -152,7 +151,6 @@ export function SideBarContainer(props: {
         [styles["narrow-sidebar"]]: shouldNarrow,
       })}
       style={{
-        // #3016 disable transition on ios mobile screen
         transition: isMobileScreen && isIOSMobile ? "none" : undefined,
       }}
     >
@@ -221,6 +219,7 @@ export function SideBarTail(props: {
     </div>
   );
 }
+
 export function SideBar(props: { className?: string }) {
   useHotKey();
   const { onDragStart, shouldNarrow } = useDragSideBar();
@@ -231,7 +230,6 @@ export function SideBar(props: { className?: string }) {
   const [mcpEnabled, setMcpEnabled] = useState(false);
 
   useEffect(() => {
-    // 检查 MCP 是否启用
     const checkMcpStatus = async () => {
       const enabled = await isMcpEnabled();
       setMcpEnabled(enabled);
@@ -299,7 +297,6 @@ export function SideBar(props: { className?: string }) {
         )}
       </SideBarHeader>
 
-      {/* 公司 Logo 放在按钮区上方 */}
       <div style={{ textAlign: "center", marginBottom: "20px" }}>
         <img
           src="/company.jpg"
