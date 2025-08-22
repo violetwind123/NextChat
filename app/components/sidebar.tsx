@@ -313,13 +313,15 @@ export function SideBar(props: { className?: string }) {
   }}
 >
   <ChatList narrow={shouldNarrow} />
+<SideBarBody onClick={...}>
+  <ChatList narrow={shouldNarrow} />
 </SideBarBody>
 
 {/* 公司 Logo 放在按钮区上方 */}
 <div style={{ textAlign: "center", marginBottom: "20px" }}>
   <img
-    src="/company-logo.jpg"
-    alt="Company Logo"
+    src="/company.jpg"
+    alt="Company"
     style={{ maxWidth: "120px", opacity: 0.9 }}
   />
 </div>
@@ -327,7 +329,7 @@ export function SideBar(props: { className?: string }) {
 <SideBarTail
   primaryAction={
     <>
-      {/* 你的 primary actions，这里是删除、设置、GitHub 链接等 */}
+      {/* 删除、设置、GitHub 等按钮 */}
     </>
   }
   secondaryAction={
@@ -346,5 +348,3 @@ export function SideBar(props: { className?: string }) {
     />
   }
 />
-
-</SideBarContainer>
