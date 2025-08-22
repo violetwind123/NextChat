@@ -221,7 +221,6 @@ export function SideBarTail(props: {
     </div>
   );
 }
-
 export function SideBar(props: { className?: string }) {
   useHotKey();
   const { onDragStart, shouldNarrow } = useDragSideBar();
@@ -245,7 +244,7 @@ export function SideBar(props: { className?: string }) {
     <SideBarContainer
       onDragStart={onDragStart}
       shouldNarrow={shouldNarrow}
-      className={styles.sidebar}
+      className={props.className}
     >
       <SideBarHeader
         title="Farland Trip"
