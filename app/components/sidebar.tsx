@@ -347,4 +347,3 @@ export function SideBar(props: { className?: string }) {
       shadow
     />
   }
-/>
