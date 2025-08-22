@@ -297,14 +297,6 @@ export function SideBar(props: { className?: string }) {
         )}
       </SideBarHeader>
 
-      <div style={{ textAlign: "center", marginBottom: "20px" }}>
-        <img
-          src="/company.jpg"
-          alt="Company"
-          style={{ maxWidth: "120px", opacity: 0.9 }}
-        />
-      </div>
-
       <SideBarBody
         onClick={(e) => {
           if (e.target === e.currentTarget) {
