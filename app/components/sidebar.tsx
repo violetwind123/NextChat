@@ -14,7 +14,6 @@ import DragIcon from "../icons/drag.svg";
 import DiscoveryIcon from "../icons/discovery.svg";
 
 import Locale from "../locales";
-
 import { useAppConfig, useChatStore } from "../store";
 
 import {
@@ -59,7 +58,7 @@ export function useHotKey() {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  });
+  }, [chatStore]);
 }
 
 export function useDragSideBar() {
@@ -103,7 +102,6 @@ export function useDragSideBar() {
     };
 
     const handleDragEnd = () => {
-      // In useRef the data is non-responsive, so `config.sidebarWidth` can't get the dynamic sidebarWidth
       window.removeEventListener("pointermove", handleDragMove);
       window.removeEventListener("pointerup", handleDragEnd);
 
@@ -247,7 +245,7 @@ export function SideBar(props: { className?: string }) {
     <SideBarContainer
       onDragStart={onDragStart}
       shouldNarrow={shouldNarrow}
-      {...props}
+      className={styles.sidebar}
     >
       <SideBarHeader
         title="Farland Trip"
@@ -290,14 +288,10 @@ export function SideBar(props: { className?: string }) {
         </div>
         {showDiscoverySelector && (
           <Selector
-            items={[
-              ...DISCOVERY.map((item) => {
-                return {
-                  title: item.name,
-                  value: item.path,
-                };
-              }),
-            ]}
+            items={DISCOVERY.map((item) => ({
+              title: item.name,
+              value: item.path,
+            }))}
             onClose={() => setshowDiscoverySelector(false)}
             onSelection={(s) => {
               navigate(s[0], { state: { fromHome: true } });
@@ -305,45 +299,69 @@ export function SideBar(props: { className?: string }) {
           />
         )}
       </SideBarHeader>
+
+      {/* 公司 Logo 放在按钮区上方 */}
+      <div style={{ textAlign: "center", marginBottom: "20px" }}>
+        <img
+          src="/company.jpg"
+          alt="Company"
+          style={{ maxWidth: "120px", opacity: 0.9 }}
+        />
+      </div>
+
       <SideBarBody
-  onClick={(e) => {
-    if (e.target === e.currentTarget) {
-      navigate(Path.Home);
-    }
-  }}
->
-  <ChatList narrow={shouldNarrow} />
-<SideBarBody onClick={...}>
-  <ChatList narrow={shouldNarrow} />
-</SideBarBody>
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            navigate(Path.Home);
+          }
+        }}
+      >
+        <ChatList narrow={shouldNarrow} />
+      </SideBarBody>
 
-{/* 公司 Logo 放在按钮区上方 */}
-<div style={{ textAlign: "center", marginBottom: "20px" }}>
-  <img
-    src="/company.jpg"
-    alt="Company"
-    style={{ maxWidth: "120px", opacity: 0.9 }}
-  />
-</div>
-
-<SideBarTail
-  primaryAction={
-    <>
-      {/* 删除、设置、GitHub 等按钮 */}
-    </>
-  }
-  secondaryAction={
-    <IconButton
-      icon={<AddIcon />}
-      text={shouldNarrow ? undefined : Locale.Home.NewChat}
-      onClick={() => {
-        if (config.dontShowMaskSplashScreen) {
-          chatStore.newSession();
-          navigate(Path.Chat);
-        } else {
-          navigate(Path.NewChat);
+      <SideBarTail
+        primaryAction={
+          <>
+            <IconButton
+              icon={<DeleteIcon />}
+              text={shouldNarrow ? undefined : Locale.Home.DeleteChat}
+              onClick={() => {
+                showConfirm(Locale.Settings.DeleteChatConfirm, () => {
+                  chatStore.deleteSession(chatStore.currentSessionId);
+                });
+              }}
+              shadow
+            />
+            <IconButton
+              icon={<SettingsIcon />}
+              text={shouldNarrow ? undefined : Locale.Settings.Title}
+              onClick={() => navigate(Path.Settings)}
+              shadow
+            />
+            <IconButton
+              icon={<GithubIcon />}
+              text={shouldNarrow ? undefined : "GitHub"}
+              onClick={() => window.open(REPO_URL, "_blank")}
+              shadow
+            />
+          </>
         }
-      }}
-      shadow
-    />
-  }
+        secondaryAction={
+          <IconButton
+            icon={<AddIcon />}
+            text={shouldNarrow ? undefined : Locale.Home.NewChat}
+            onClick={() => {
+              if (config.dontShowMaskSplashScreen) {
+                chatStore.newSession();
+                navigate(Path.Chat);
+              } else {
+                navigate(Path.NewChat);
+              }
+            }}
+            shadow
+          />
+        }
+      />
+    </SideBarContainer>
+  );
+}
