@@ -314,6 +314,19 @@ export function SideBar(props: { className?: string }) {
       >
         <ChatList narrow={shouldNarrow} />
       </SideBarBody>
+      {/* 公司 Logo */}
+<div style={{ textAlign: "center", marginBottom: "20px" }}>
+  <img
+    src="/company-logo.jpg"   // 放 public/ 下的 jpg 文件
+    alt="Company Logo"
+    style={{ maxWidth: "120px", opacity: 0.9 }}
+  />
+</div>
+
+<SideBarTail
+  primaryAction={ ... }
+  secondaryAction={ ... }
+/>
       <SideBarTail
         primaryAction={
           <>
