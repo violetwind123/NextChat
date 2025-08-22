@@ -82,7 +82,7 @@
   right: 0;
   height: 100%;
   width: $width;
-  background-color: rgba($color: #6666CC;, $alpha: 0);
+  background-color: rgba($color: #6666CC, $alpha: 0);
   cursor: ew-resize;
   transition: all ease 0.3s;
   display: flex;
@@ -348,3 +348,7 @@
   direction: rtl;
 }
 
+.sidebar-title,
+.sidebar-sub-title {
+  color: #fff !important;
+}
