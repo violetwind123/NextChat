@@ -59,7 +59,7 @@ export function useHotKey() {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [chatStore]);
+  });
 }
 
 export function useDragSideBar() {
@@ -81,6 +81,7 @@ export function useDragSideBar() {
   };
 
   const onDragStart = (e: MouseEvent) => {
+    // Remembers the initial width each time the mouse is pressed
     startX.current = e.clientX;
     startDragWidth.current = config.sidebarWidth;
     const dragStartTime = Date.now();
@@ -102,9 +103,11 @@ export function useDragSideBar() {
     };
 
     const handleDragEnd = () => {
+      // In useRef the data is non-responsive, so `config.sidebarWidth` can't get the dynamic sidebarWidth
       window.removeEventListener("pointermove", handleDragMove);
       window.removeEventListener("pointerup", handleDragEnd);
 
+      // if user click the drag icon, should toggle the sidebar
       const shouldFireClick = Date.now() - dragStartTime < 300;
       if (shouldFireClick) {
         toggleSideBar();
@@ -151,6 +154,7 @@ export function SideBarContainer(props: {
         [styles["narrow-sidebar"]]: shouldNarrow,
       })}
       style={{
+        // #3016 disable transition on ios mobile screen
         transition: isMobileScreen && isIOSMobile ? "none" : undefined,
       }}
     >
@@ -230,6 +234,7 @@ export function SideBar(props: { className?: string }) {
   const [mcpEnabled, setMcpEnabled] = useState(false);
 
   useEffect(() => {
+    // 检查 MCP 是否启用
     const checkMcpStatus = async () => {
       const enabled = await isMcpEnabled();
       setMcpEnabled(enabled);
@@ -242,11 +247,11 @@ export function SideBar(props: { className?: string }) {
     <SideBarContainer
       onDragStart={onDragStart}
       shouldNarrow={shouldNarrow}
-      className={props.className}
+      {...props}
     >
       <SideBarHeader
-        title="Farland Trip"
-        subTitle="Thanks for your service Ms.Yang"
+        title="Farland International"
+        subTitle="For MS BING YANG"
         logo={<ChatGptIcon />}
         shouldNarrow={shouldNarrow}
       >
@@ -285,10 +290,14 @@ export function SideBar(props: { className?: string }) {
         </div>
         {showDiscoverySelector && (
           <Selector
-            items={DISCOVERY.map((item) => ({
-              title: item.name,
-              value: item.path,
-            }))}
+            items={[
+              ...DISCOVERY.map((item) => {
+                return {
+                  title: item.name,
+                  value: item.path,
+                };
+              }),
+            ]}
             onClose={() => setshowDiscoverySelector(false)}
             onSelection={(s) => {
               navigate(s[0], { state: { fromHome: true } });
@@ -296,7 +305,6 @@ export function SideBar(props: { className?: string }) {
           />
         )}
       </SideBarHeader>
-
       <SideBarBody
         onClick={(e) => {
           if (e.target === e.currentTarget) {
@@ -306,32 +314,37 @@ export function SideBar(props: { className?: string }) {
       >
         <ChatList narrow={shouldNarrow} />
       </SideBarBody>
-
       <SideBarTail
         primaryAction={
           <>
-            <IconButton
-              icon={<DeleteIcon />}
-              text={shouldNarrow ? undefined : Locale.Home.DeleteChat}
-              onClick={() => {
-                showConfirm(Locale.Settings.DeleteChatConfirm, () => {
-                  chatStore.deleteSession(chatStore.currentSessionId);
-                });
-              }}
-              shadow
-            />
-            <IconButton
-              icon={<SettingsIcon />}
-              text={shouldNarrow ? undefined : Locale.Settings.Title}
-              onClick={() => navigate(Path.Settings)}
-              shadow
-            />
-            <IconButton
-              icon={<GithubIcon />}
-              text={shouldNarrow ? undefined : "GitHub"}
-              onClick={() => window.open(REPO_URL, "_blank")}
-              shadow
-            />
+            <div className={clsx(styles["sidebar-action"], styles.mobile)}>
+              <IconButton
+                icon={<DeleteIcon />}
+                onClick={async () => {
+                  if (await showConfirm(Locale.Home.DeleteChat)) {
+                    chatStore.deleteSession(chatStore.currentSessionIndex);
+                  }
+                }}
+              />
+            </div>
+            <div className={styles["sidebar-action"]}>
+              <Link to={Path.Settings}>
+                <IconButton
+                  aria={Locale.Settings.Title}
+                  icon={<SettingsIcon />}
+                  shadow
+                />
+              </Link>
+            </div>
+            <div className={styles["sidebar-action"]}>
+              <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
+                <IconButton
+                  aria={Locale.Export.MessageFromChatGPT}
+                  icon={<GithubIcon />}
+                  shadow
+                />
+              </a>
+            </div>
           </>
         }
         secondaryAction={
