@@ -11,10 +11,10 @@ import { getServerSideConfig } from "./config/server";
 export const metadata: Metadata = {
   title: "Wayne'sGPT",
   description: "Wayne'sGPT",
-  appleWebApp: {
-    title: "Wayne'sGPT",
-    statusBarStyle: "Wayne'sGPT",
-  },
+ appleWebApp: {
+  title: "Wayne'sGPT",
+  statusBarStyle: "default",
+},
 };
 
 export const viewport: Viewport = {
