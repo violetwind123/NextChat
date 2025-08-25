@@ -149,15 +149,16 @@ export function SideBarContainer(props: {
   );
   const { children, className, onDragStart, shouldNarrow } = props;
   return (
-    <div
-      className={clsx(styles.sidebar, className, {
-        [styles["narrow-sidebar"]]: shouldNarrow,
-      })}
-      style={{
-        // #3016 disable transition on ios mobile screen
-        transition: isMobileScreen && isIOSMobile ? "none" : undefined,
-      }}
-    >
+      <div
+  className={clsx(styles.sidebar, className, {
+    [styles["narrow-sidebar"]]: shouldNarrow,
+  })}
+  style={{
+    backgroundColor: "#0a0d12",  // 深色背景
+    color: "#f5f5f5",            // 浅灰文字
+    transition: isMobileScreen && isIOSMobile ? "none" : undefined,
+  }}
+      >
       {children}
       <div
         className={styles["sidebar-drag"]}
@@ -250,8 +251,8 @@ export function SideBar(props: { className?: string }) {
       {...props}
     >
       <SideBarHeader
-        title="Farland International"
-        subTitle="For MS BING YANG"
+        title="the Batman"
+        subTitle=""
         logo={<ChatGptIcon />}
         shouldNarrow={shouldNarrow}
       >
